@@ -38,7 +38,7 @@ for entry in entries:
     
     #Because I love my husband, I converted dates for him...
     try:
-        date.append( datetime.strptime( entry.h4.get_text(), "%Y-%m-%d" ).strftime("%a, %d %b %Y 00:00:00 CST") )
+        date.append( datetime.strptime( entry.h4.get_text(), "%Y-%m-%d" ).strftime("%a, %d %b %Y 12:00:00 CST") )
     except ValueError:
         print("issues parsing date. Check that %Y-%m-%d format is used and the date is inside a h4 bracket inside of linkcerpt.")
         
