@@ -1,16 +1,14 @@
 #Let's create a little rss feed generator in Derrick's favorite language.
 #written by kbturk @ 10/28/2020
 
-import requests
+import requests, sys
 from bs4 import BeautifulSoup
 from datetime import datetime
 
 URL = 'https://usethe.computer'
 
 def error_log(s):
-    with open("error_log.txt","w") as f:
-        f.write(s)
-        f.close()  
+    print(s, file=sys.stderr)
         
 '''
 I. Info scraped from the website boiled down to a list of:
@@ -45,9 +43,9 @@ for entry in entries:
     description.append(entry.p.get_text())
 
 #a little error handling is all I need...
-if len(title) != len(link) != len(date) != len(description):
+if not(len(title) == len(link) == len(date) == len(description)):
     print("scraper had issues: title, link, and date lengths not equal.")
-    error_log(f'title lenghts: {len(title)},\ntitles:\n{title}\n\nlink lengths:{len(link)}\nlinks:\n{link}\n\ndate lengths: {len(date)}\ndates:\n{date}\n\ndescriptions:\n{len(description)}\n{description}')
+    error_log(f'title lengths: {len(title)},\ntitles:\n{title}\n\nlink lengths:{len(link)}\nlinks:\n{link}\n\ndate lengths: {len(date)}\ndates:\n{date}\n\ndescriptions:\n{len(description)}\n{description}')
 
 else:
     print("scraper successfully scraped name, url, date and description from website.")
@@ -81,12 +79,21 @@ xml_doc_header = '''<?xml version = "1.0" encoding = "UTF-8" ?>
 </channel>
 </rss>'''
 
-a = ["\n<item>\n        <title>","</title>\n        <link>","</link>\n        <pubDate>","</pubDate>\n      <description>","</description>\n<guid>","</guid>\n    </item>"]
+#a = ["\n<item>\n        <title>","</title>\n        <link>","</link>\n        <pubDate>","</pubDate>\n      <description>","</description>\n<guid>","</guid>\n    </item>"]
 
 xml_body = []
 
 for i in range(len(title)):
-    xml_body.append(a[0]+title[i]+a[1]+link[i]+a[2]+date[i]+a[3]+description[i]+a[4]+link[i]+a[5])
+    #xml_body.append(a[0]+title[i]+a[1]+link[i]+a[2]+date[i]+a[3]+description[i]+a[4]+link[i]+a[5])
+    xml_body.append(f'''
+<item>
+    <title>{title[i]}</title>
+    <link>{link[i]}</link>
+    <pubDate>{date[i]}</pubDate>
+    <description>{description[i]}</description>
+    <guid>{link[i]}</guid>
+    </item>
+    ''')
 xml_body = "".join(xml_body)
 
 
